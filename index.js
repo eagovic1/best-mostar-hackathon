@@ -7,8 +7,15 @@ const path = require('path');
 const axios = require('axios');
 const db = require('./db.js');
 const initialize = require('./initializeDb.js');
+const dotenv = require('dotenv');
 
+dotenv.config();
 const app = express();
+
+
+const OpenAI = require('openai');
+const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
+
 
 app.use(express.static('public'));
 
@@ -16,8 +23,79 @@ app.get('/book/:id', function (req, res) {
     res.json(getBookById(req.params.id));
 });
 
-function getBookById(id) {
-    axios.get(`https://www.googleapis.com/books/v1/volumes/${req.params.id}`)
+app.post('/login', function (req, res) {
+    const { email, password } = req.body;
+    db.user.findOne({ where: { email: email } }).then(user => {
+        if (user && password == user.password) {
+            req.session.user = user;
+            req.session.userId = user.userId;
+            res.json(user);
+        } else {
+            res.status(401).json({ error: 'Invalid credentials' });
+        }
+    });
+});
+
+app.post('/logout', function (req, res) {
+    req.session.destroy();
+    res.json({ success: true });
+});
+
+app.get('/request/', function (req, res) {
+    if (req.session.user && req.session.user.role == 'student') {
+        db.history.findAll({ where: { UserId: req.session.user.id } }).then(requests => {
+            res.json(requests);
+        });
+    } else if (req.session.user && req.session.user.role == 'teacher') {
+        db.history.findAll().then(requests => {
+            res.json(requests);
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+app.post('/request/book', function (req, res) {
+    if (req.session.user) {
+        const { bookId, bookName } = req.body;
+        db.history.findOne({ where: { UserId: req.session.user.id, status: 'pending' } }).then(request => {
+            if (request) {
+                return res.status(400).json({ error: 'Request already pending' });
+            } else {
+                db.history.create({ status: 'pending', date: new Date(), bookId: bookId, UserId: req.session.user.id }).then(request => {
+                    notifyTeacher("eagovic1@etf.unsa.ba", req.session.user.name, bookName);
+                    return res.status(200).json({ success: true });
+                });
+            }
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+
+app.put('/request/book/status', function (req, res) {
+    if (req.session.user && req.session.user.role == 'teacher') {
+        const { requestId, status } = req.body;
+        if (!["approved", "rejected", "pending"].includes(status))
+            return res.status(400).json({ error: 'Invalid status' });
+        db.history.update({ status: status }, { where: { id: requestId } }).then(async request => {
+            db.history.findByPk(requestId).then(async updatedRequest => {
+                let bookId = updatedRequest["bookId"];
+                let book = await getBookById(bookId);
+                let bookName = book.title;
+                notifyStudent("eagovic1@etf.unsa.ba", bookName, status);
+                return res.status(200).json({ success: true });
+            });
+
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+async function getBookById(id) {
+    let book = await axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)
         .then(function (response) {
             return {
                 title: response.data.volumeInfo.title,
@@ -26,6 +104,8 @@ function getBookById(id) {
                 image: response.data.volumeInfo.imageLinks.thumbnail
             }
         })
+    console.log(book);
+    return book;
 }
 
 const { sendMail } = require('./mail');
@@ -43,6 +123,70 @@ function notifyStudent(studentMail, bookName, status) {
     let subject = "New book request";
     sendMail(from, to, subject, `Teacher has changed the status of your request for the book ${bookName} to ${status}!`);
 }
+
+app.get('/book/search/:name', async function (req, res) {
+
+    let response = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${req.params.name}`);
+
+  
+
+    let books = response.data.items;
+
+    let uniqueBooks = [];
+
+   for(let i=0;i<books.length;i++){
+         let unique = true;
+         for(let j=0;j<uniqueBooks.length;j++){
+              if(uniqueBooks[j].volumeInfo.title.toLowerCase() === books[i].volumeInfo.title.toLowerCase() || books[i].volumeInfo.title.toLowerCase().includes(uniqueBooks[j].volumeInfo.title.toLowerCase())){
+                unique = false;
+                break;
+              }
+         }
+         if(unique){
+              uniqueBooks.push(books[i]);
+         }
+    }  
+    uniqueBooks.forEach(element => {
+        console.log(element.volumeInfo.title)
+    });
+
+    res.json(uniqueBooks);
+    return res.end();
+    
+})
+
+
+app.get('/book/history', async function (req, res) {
+    let books = await db.history.findAll({
+        where: {
+            UserId: req.session.userId,
+            status: 'approved'
+        }
+    })
+
+    res.send(books);
+    return res.end();
+});
+    
+app.get('/quiz/:id',async function (req, res) {
+
+    let bookInfo = await axios.get(`https://www.googleapis.com/books/v1/volumes/${req.params.id}`)
+    
+    let name = bookInfo.data.volumeInfo.title;  
+
+    const prompt = "Create long summary of the book and a quiz for the book " + name + "in English language with 5 detailed questions from easiest to hardest, give long answers to questions in JSON format, give questions only about the plot of the book. Like this {\"summary\": \"answer\",\"questions\": [{\"question\": \"Question\", \"answer\": \"Your answer\"}, {\"question\": \"Question\", \"answer\": \"Your answer\"}]}";
+
+    const stream = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: `${prompt}` }],
+    });
+
+    const quiz = JSON.parse(stream.choices[0].message.content);
+    res.json(quiz);
+
+});
+
+
 
 initialize().then(() => {
     app.listen(3000, () => {
