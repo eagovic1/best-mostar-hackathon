@@ -12,19 +12,21 @@ const app = express();
 
 app.use(express.static('public'));
 
-app.get('/book/:id',function(req,res){
-
-    axios.get(`https://www.googleapis.com/books/v1/volumes/${req.params.id}`)
-    .then(function(response){
-        res.json({title: response.data.volumeInfo.title, authors: response.data.volumeInfo.authors, description: response.data.volumeInfo.description, image: response.data.volumeInfo.imageLinks.thumbnail})
-        return res.end();
-    })
-
-
-
+app.get('/book/:id', function (req, res) {
+    res.json(getBookById(req.params.id));
 });
 
-
+function getBookById(id) {
+    axios.get(`https://www.googleapis.com/books/v1/volumes/${req.params.id}`)
+        .then(function (response) {
+            return {
+                title: response.data.volumeInfo.title,
+                authors: response.data.volumeInfo.authors,
+                description: response.data.volumeInfo.description,
+                image: response.data.volumeInfo.imageLinks.thumbnail
+            }
+        })
+}
 
 const { sendMail } = require('./mail');
 
