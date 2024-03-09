@@ -4,13 +4,27 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const path = require('path');
-
+const axios = require('axios');
 const db = require('./db.js');
 const initialize = require('./initializeDb.js');
 
 const app = express();
 
 app.use(express.static('public'));
+
+app.get('/book/:id',function(req,res){
+
+    axios.get(`https://www.googleapis.com/books/v1/volumes/${req.params.id}`)
+    .then(function(response){
+        res.json({title: response.data.volumeInfo.title, authors: response.data.volumeInfo.authors, description: response.data.volumeInfo.description, image: response.data.volumeInfo.imageLinks.thumbnail})
+        return res.end();
+    })
+
+
+
+});
+
+
 
 const { sendMail } = require('./mail');
 
