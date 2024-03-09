@@ -10,6 +10,14 @@ const initialize = require('./initializeDb.js');
 
 const app = express();
 
+
+app.use(session({
+    secret: '123456',
+    resave: false,
+    saveUninitialized: true
+}));
+
+app.use(bodyParser.json());
 app.use(express.static('public'));
 
 app.get('/book/:id', function (req, res) {
@@ -21,7 +29,7 @@ app.post('/login', function (req, res) {
     db.user.findOne({ where: { email: email } }).then(user => {
         if (user && password == user.password) {
             req.session.user = user;
-            res.json({ user: user });
+            res.json(user);
         } else {
             res.status(401).json({ error: 'Invalid credentials' });
         }
@@ -33,8 +41,47 @@ app.post('/logout', function (req, res) {
     res.json({ success: true });
 });
 
-function getBookById(id) {
-    axios.get(`https://www.googleapis.com/books/v1/volumes/${req.params.id}`)
+app.post('/request/book', function (req, res) {
+    if (req.session.user) {
+        const { bookId, bookName } = req.body;
+        db.history.findOne({ where: { UserId: req.session.user.id, status: 'pending' } }).then(request => {
+            if (request) {
+                return res.status(400).json({ error: 'Request already pending' });
+            } else {
+                db.history.create({ status: 'pending', date: new Date(), bookId: bookId, UserId: req.session.user.id }).then(request => {
+                    notifyTeacher("eagovic1@etf.unsa.ba", req.session.user.name, bookName);
+                    return res.status(200).json({ success: true });
+                });
+            }
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+
+app.put('/request/book/status', function (req, res) {
+    if (req.session.user && req.session.user.role == 'teacher') {
+        const { requestId, status } = req.body;
+        if (!["approved", "rejected", "pending"].includes(status))
+            return res.status(400).json({ error: 'Invalid status' });
+        db.history.update({ status: status }, { where: { id: requestId } }).then(async request => {
+            db.history.findByPk(requestId).then(async updatedRequest => {
+                let bookId = updatedRequest["bookId"];
+                let book = await getBookById(bookId);
+                let bookName = book.title;
+                notifyStudent("eagovic1@etf.unsa.ba", bookName, status);
+                return res.status(200).json({ success: true });
+            });
+
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+async function getBookById(id) {
+    let book = await axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)
         .then(function (response) {
             return {
                 title: response.data.volumeInfo.title,
@@ -43,6 +90,8 @@ function getBookById(id) {
                 image: response.data.volumeInfo.imageLinks.thumbnail
             }
         })
+    console.log(book);
+    return book;
 }
 
 const { sendMail } = require('./mail');
