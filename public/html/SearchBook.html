@@ -24,6 +24,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="manifest" href="site.webmanifest">
+    
 
 </head>
 
@@ -50,12 +51,6 @@
         ================================================== -->
         <header id="masthead" class="s-header">
 
-            <div class="s-header__branding">
-                <p class="site-title">
-                    <a href="index.html" rel="home">Spurgeon.</a>
-                </p>
-            </div>
-
             <div class="row s-header__navigation">
 
                 <nav class="s-header__nav-wrap">
@@ -64,28 +59,8 @@
     
                     <ul class="s-header__nav">
                         <li><a href="index.html" title="">Home</a></li>
-                        <li class="has-children">
-                            <a href="#0" title="" class="">Categories</a>
-                            <ul class="sub-menu">
-                                <li><a href="category.html">Design</a></li>
-                                <li><a href="category.html">Lifestyle</a></li>
-                                <li><a href="category.html">Inspiration</a></li>
-                                <li><a href="category.html">Work</a></li>
-                                <li><a href="category.html">Health</a></li>
-                                <li><a href="category.html">Photography</a></li>
-                            </ul>
-                        </li>
-                        <li class="has-children">
-                            <a href="#0" title="" class="">Blog</a>
-                            <ul class="sub-menu">
-                                <li><a href="single-standard.html">Standard Post</a></li>
-                                <li><a href="single-video.html">Video Post</a></li>
-                                <li><a href="single-audio.html">Audio Post</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="styles.html" title="">Styles</a></li>
-                        <li><a href="about.html" title="">About</a></li>
-                        <li class="current-menu-item"><a href="contact.html" title="">Contact</a></li>
+                        <li><a href="styles.html" title="">My Books</a></li>
+                        <li class="current-menu-item"><a href="contact.html" title="">Search</a></li>
                     </ul> <!-- end s-header__nav -->
 
                 </nav> <!-- end s-header__nav-wrap -->
@@ -125,7 +100,6 @@
         <!-- # site-content
         ================================================== -->
         <div id="content" class="s-content s-content--page">
-
                 <div class="row entry-wrap">
                     <div class="column lg-12">
 
@@ -138,14 +112,34 @@
                                 </h1>
     
                             </header>
-
+                            <h2 id="h1">
+                                    Complete a form to get suggestions for a book.
+                                </h2> 
+                                <div class="icon-container">
+                                    <!-- Circular Icons with Images -->
+                                    <div class="krug">
+                                      <div class="icon" onclick="showAdvanced()" id="form">
+                                          <img src="../images/form.png" alt="Icon 1" id="formimg">
+                                      </div>
+                                </div>
+                            </div>
+                            <h2 id="h1">
+                                Or search for one by name.
+                            </h2> 
+                            <div class="icon-container">
+                                <!-- Circular Icons with Images -->
+                                <div class="krug">
+                                  <div class="icon" onclick="showSearch()" id="search">
+                                      <img src="../images/search.png" alt="Icon 1" id="searchimg">
+                                  </div>
+                            </div>
+                        </div>
+                            
                             <div class="content-primary">
 
                                 <div class="entry__content">
         
-                                    <h2 id="h1">
-                                    Complete the form below to get suggestions for a book.</h2> 
-
+                                    
                                     <h2 id="h2">
                                     After selecting a book wait for your teacher to approve it. 
                                     </h2>
@@ -226,9 +220,15 @@
                                     </div>
 
                             </div> <!-- end content-primary -->
+                            
 
                         </article> <!-- end entry -->
-
+                        <div class="content-secondary">
+                                <div id="search-container">
+                                    <input type="text" id="search-input" placeholder="Enter your search...">
+                                    <button id="search-button" onclick="performSearch()">Search</button>
+                                </div>
+                            </div> <!-- end content-primary -->
                     </div>
                 </div> <!-- end entry-wrap -->
         </section> <!-- end s-content -->
@@ -267,11 +267,15 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</body>
     <script>
         function changeColor(icon) {
             img = document.getElementById(icon.id+"img");
-            if(img.src == `file:///C:/Users/Svage/Documents/Hackathon%203/best-mostar-hackathon/public/images/${icon.id}1.png`)
+            if((img.src).substr(-5,1) == 1)
                 img.src = `../images/${icon.id}.png`;
             else
                 img.src = `../images/${icon.id}1.png`;
@@ -300,6 +304,31 @@
         // Darken the clicked button to black
         button.style.backgroundColor = '#bfc2c3';
     }
+    </script>
+    <script>
+        function showAdvanced() {
+            document.querySelector(".content-primary").style.display = "block";
+            document.querySelector(".content-secondary").style.display = "none";
+            diff = document.getElementById("h2");
+            diff.scrollIntoView({ behavior: 'smooth' });
+    }
+    </script>
+    <script>
+        function showSearch() {
+            document.querySelector(".content-secondary").style.display = "block";
+            document.querySelector(".content-primary").style.display = "none";
+            diff = document.getElementById("h1");
+            diff.scrollIntoView({ behavior: 'smooth' });
+    }
+    </script>
+    <script>
+        function performSearch() {
+            // Get the value from the search input
+            var searchTerm = document.getElementById('search-input').value;
+
+            // Perform your search logic here (e.g., show search results, navigate to a new page, etc.)
+            alert('Performing search for: ' + searchTerm);
+        }
     </script>
       
 </body>
