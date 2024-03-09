@@ -1,9 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs');
-const bcrypt = require('bcrypt');
 const session = require('express-session');
-const path = require('path');
 const axios = require('axios');
 const db = require('./db.js');
 const initialize = require('./initializeDb.js');
@@ -43,8 +40,7 @@ app.post('/register', function (req, res) {
 );
 
 app.post('/login', function (req, res) {
-    const email = req.body.email;
-    const password = req.body.password;
+    const { email, password } = req.body;
     db.user.findOne({ where: { email: email } }).then(user => {
         if (user && password == user.password) {
             req.session.user = user;
@@ -74,7 +70,10 @@ async function getBookById(id) {
                 description: response.data.volumeInfo.description,
                 image: response.data.volumeInfo.imageLinks.thumbnail
             }
-        })
+        }).catch(function (error) {
+            console.log(error);
+            return { error: 'Book not found'};
+        });
     return book;
 }
 
@@ -149,14 +148,21 @@ app.post('/books/params', async (req, res) => {
 /**
  * Book request history
  */
+async function getBooksFromRequests(requests) {
+    let books = [];
+    for (let request of requests)
+        books.push(await getBookById(request.bookId));
+    return books;
+}
+
 app.get('/history/all', function (req, res) {
     if (req.session.user && req.session.user.role == 'student') {
-        db.history.findAll({ where: { UserId: req.session.user.id } }).then(requests => {
-            res.json(requests);
+        db.history.findAll({ where: { UserId: req.session.user.id } }).then(async requests => {
+            res.json(await getBooksFromRequests(requests));
         });
     } else if (req.session.user && req.session.user.role == 'teacher') {
-        db.history.findAll().then(requests => {
-            res.json(requests);
+        db.history.findAll().then(async requests => {
+            res.json(await getBooksFromRequests(requests));
         });
     } else {
         res.status(401).json({ error: 'Unauthorized' });
@@ -165,12 +171,12 @@ app.get('/history/all', function (req, res) {
 
 app.get('/history/approved', async function (req, res) {
     if (req.session.user && req.session.user.role == 'student') {
-        db.history.findAll({ where: { UserId: req.session.user.id, status: "approved" } }).then(requests => {
-            res.json(requests);
+        db.history.findAll({ where: { UserId: req.session.user.id, status: "approved" } }).then(async requests => {
+            res.json(await getBooksFromRequests(requests));
         });
     } else if (req.session.user && req.session.user.role == 'teacher') {
-        db.history.findAll({ where: { status: "approved" } }).then(requests => {
-            res.json(requests);
+        db.history.findAll({ where: { status: "approved" } }).then(async requests => {
+            res.json(await getBooksFromRequests(requests));
         });
     } else {
         res.status(401).json({ error: 'Unauthorized' });
@@ -178,13 +184,13 @@ app.get('/history/approved', async function (req, res) {
 });
 
 app.get('/history/ongoing', async function (req, res) {
-    if (req.session!=null && req.session.user && req.session.user.role == 'student') {
-        db.history.findAll({ where: { UserId: req.session.user.id, status: "approved", graded: false } }).then(requests => {
-            res.json(requests);
+    if (req.session != null && req.session.user && req.session.user.role == 'student') {
+        db.history.findAll({ where: { UserId: req.session.user.id, status: "approved", graded: false } }).then(async requests => {
+            res.json(await getBooksFromRequests(requests));
         });
-    } else if (req.session!=null && req.session.user && req.session.user.role == 'teacher') {
-        db.history.findAll({ where: { status: "approved", graded: false } }).then(requests => {
-            res.json(requests);
+    } else if (req.session != null && req.session.user && req.session.user.role == 'teacher') {
+        db.history.findAll({ where: { status: "approved", graded: false } }).then(async requests => {
+            res.json(await getBooksFromRequests(requests));
         });
     } else {
         res.status(401).json({ error: 'Unauthorized' });
@@ -192,14 +198,14 @@ app.get('/history/ongoing', async function (req, res) {
 });
 
 app.get('/history/graded', async function (req, res) {
-    
+
     if (req.session.user && req.session.user.role == 'student') {
-        db.history.findAll({ where: { UserId: req.session.user.id, graded: true } }).then(requests => {
-            res.json(requests);
+        db.history.findAll({ where: { UserId: req.session.user.id, graded: true } }).then(async requests => {
+            res.json(await getBooksFromRequests(requests));
         });
     } else if (req.session.user && req.session.user.role == 'teacher') {
-        db.history.findAll({ where: { graded: true } }).then(requests => {
-            res.json(requests);
+        db.history.findAll({ where: { graded: true } }).then(async requests => {
+            res.json(await getBooksFromRequests(requests));
         });
     } else {
         res.status(401).json({ error: 'Unauthorized' });
@@ -228,11 +234,12 @@ function notifyStudent(studentMail, bookName, status) {
 
 app.post('/request/book', function (req, res) {
     if (req.session.user) {
-        const { bookId, bookName } = req.body;
-        db.history.findOne({ where: { UserId: req.session.user.id, status: 'pending' } }).then(request => {
+        const { bookId } = req.body;
+        db.history.findOne({ where: { UserId: req.session.user.id, status: 'pending' } }).then(async request => {
             if (request) {
                 return res.status(400).json({ error: 'Request already pending' });
             } else {
+                let bookName = await getBookById(bookId).title;
                 db.history.create({ status: 'pending', date: new Date(), bookId: bookId, UserId: req.session.user.id }).then(request => {
                     notifyTeacher("eagovic1@etf.unsa.ba", req.session.user.name, bookName);
                     return res.status(200).json({ success: true });

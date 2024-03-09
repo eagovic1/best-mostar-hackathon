@@ -1,23 +1,39 @@
 let globalBooks = [];
+async function login() {
+    await fetch("/login", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: 'test',
+            password: 'test'
+        })
+    }
+    ).then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+}
 
+function stripHtmlTags(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div.textContent || div.innerText || '';
+}
 
-
-window.onload = function() {  
-
-
-    
-
+window.onload = async function () {
+    await login()
     let counter = 0;
-    ajax.onreadystatechange = () =>{
-        if(ajax.readyState == 4 && ajax.status == 200){
+    let ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = () => {
+        if (ajax.readyState == 4 && ajax.status == 200) {
             globalBooks = JSON.parse(ajax.responseText);
             let mainDiv = document.getElementById('main-card-div');
-
+            console.log(globalBooks)
             let books = globalBooks;
 
             books.forEach(book => {
-                
-
                 mainDiv.innerHTML += `
                     <article id="book-${counter}" class="brick entry" data-animate-el>
                         <div class="entry__thumb">
@@ -40,8 +56,8 @@ window.onload = function() {
                                 <h1 class="entry__title"><a href="single-standard.html">${book.title}</a></h1>
                             </div>
                             <div class="entry__excerpt">
-                                <p id="text-${counter}">
-                                    ${book.description.substring(0,400)}... <b><a id="button-${counter}" class="read-more-button" class="entry__more-link">Show more</a></b>
+                                <p id="text-${counter}" style="font-style:normal">
+                                    ${stripHtmlTags(book.description).substring(0, 400)}... <b><a id="button-${counter}" class="read-more-button" class="entry__more-link">Show more</a></b>
                                 </p>
                             </div>
                             
@@ -52,26 +68,26 @@ window.onload = function() {
             });
 
             const buttons = document.querySelectorAll('.read-more-button');
- 
+
             buttons.forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
-                   e.target.style.display = 'none';    
-                   let paragraph = document.getElementById(`text-${e.target.id.substr(e.target.id.length - 1)}`);
-                    paragraph.innerHTML += globalBooks[e.target.id.substr(e.target.id.length - 1)].description.substring(400);
+                    e.target.style.display = 'none';
+                    let paragraph = document.getElementById(`text-${e.target.id.substr(e.target.id.length - 1)}`);
+                    paragraph.innerHTML = stripHtmlTags(globalBooks[e.target.id.substr(e.target.id.length - 1)].description);
                 });
             });
 
         }
     }
-    ajax.open('GET', '/history/approved',true);
-    ajax.setRequestHeader('Content-Type', 'application/json');  
-    ajax.send();     
+    ajax.open('GET', '/history/approved', true);
+    ajax.setRequestHeader('Content-Type', 'application/json');
+    ajax.send();
 
 
 
 
-  }
+}
 
-  
- 
+
+
