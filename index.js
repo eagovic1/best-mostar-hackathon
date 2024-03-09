@@ -16,6 +16,23 @@ app.get('/book/:id', function (req, res) {
     res.json(getBookById(req.params.id));
 });
 
+app.post('/login', function (req, res) {
+    const { email, password } = req.body;
+    db.user.findOne({ where: { email: email } }).then(user => {
+        if (user && password == user.password) {
+            req.session.user = user;
+            res.json({ user: user });
+        } else {
+            res.status(401).json({ error: 'Invalid credentials' });
+        }
+    });
+});
+
+app.post('/logout', function (req, res) {
+    req.session.destroy();
+    res.json({ success: true });
+});
+
 function getBookById(id) {
     axios.get(`https://www.googleapis.com/books/v1/volumes/${req.params.id}`)
         .then(function (response) {
