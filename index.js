@@ -7,8 +7,15 @@ const path = require('path');
 const axios = require('axios');
 const db = require('./db.js');
 const initialize = require('./initializeDb.js');
+const dotenv = require('dotenv');
 
+dotenv.config();
 const app = express();
+
+
+const OpenAI = require('openai');
+const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
+
 
 app.use(express.static('public'));
 
@@ -43,6 +50,29 @@ function notifyStudent(studentMail, bookName, status) {
     let subject = "New book request";
     sendMail(from, to, subject, `Teacher has changed the status of your request for the book ${bookName} to ${status}!`);
 }
+
+app.get('/quiz/:id',async function (req, res) {
+
+    let bookInfo = await axios.get(`https://www.googleapis.com/books/v1/volumes/${req.params.id}`)
+    
+    let name = bookInfo.data.volumeInfo.title;  
+
+    const prompt = "Create long summary of the book and a quiz for the book " + name + " in Bosnian language with 5 detailed questions from easiest to hardest, give long explanations to questions in JSON format, give questions only about the plot of the book. Like this {\"summary\": \"answer\",\"questions\": [{\"question\": \"Question\", \"answer\": \"Your answer\"}, {\"question\": \"Question\", \"answer\": \"Your answer\"}]}";
+
+    //const prompt = "Create one"
+
+
+    const stream = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: `${prompt}` }],
+    });
+
+    const quiz = JSON.parse(stream.choices[0].message.content);
+    res.json(quiz);
+
+});
+
+
 
 initialize().then(() => {
     app.listen(3000, () => {
