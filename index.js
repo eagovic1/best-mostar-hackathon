@@ -41,6 +41,20 @@ app.post('/logout', function (req, res) {
     res.json({ success: true });
 });
 
+app.get('/request/', function (req, res) {
+    if (req.session.user && req.session.user.role == 'student') {
+        db.history.findAll({ where: { UserId: req.session.user.id } }).then(requests => {
+            res.json(requests);
+        });
+    } else if (req.session.user && req.session.user.role == 'teacher') {
+        db.history.findAll().then(requests => {
+            res.json(requests);
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
 app.post('/request/book', function (req, res) {
     if (req.session.user) {
         const { bookId, bookName } = req.body;
