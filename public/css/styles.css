@@ -5488,6 +5488,10 @@ body.search-is-visible .s-header__search-inner {
 #selectedDifficulty {
     display: none;
 }
+
+#search-button-interests:hover, #search-button:hover{
+    background-color: gray;
+}
 /* ------------------------------------------------------------------- 
  * responsive:
  * comments

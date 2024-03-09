@@ -222,7 +222,7 @@
                                         </div>
                                     </div>
                                     <div class="column lg-12">
-                                        <input name="submit" id="submit" class="btn btn--primary btn-wide btn--large u-fullwidth" value="Search" type="submit">
+                                        <button id="search-button-interests" class="btn btn--primary btn-wide btn--large u-fullwidth" onclick="performSearchByInterests()">Search</button>
                                     </div>
 
                             </div> <!-- end content-primary -->
@@ -293,8 +293,9 @@
         var buttons = document.querySelectorAll('.btn-primary');
         buttons.forEach(function(btn) {
             btn.style.backgroundColor = "#d5d8da";
+            btn.classList.remove('clicked');
         });
-
+        button.classList.add('clicked');
         // Darken the clicked button to black
         button.style.backgroundColor = '#bfc2c3';
     }
@@ -305,9 +306,9 @@
         var buttons = document.querySelectorAll('.btn-secondary');
         buttons.forEach(function(btn) {
             btn.style.backgroundColor = "#d5d8da";
+            btn.classList.remove('clicked');
         });
-
-        // Darken the clicked button to black
+        button.classList.add('clicked');
         button.style.backgroundColor = '#bfc2c3';
     }
     </script>
