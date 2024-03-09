@@ -169,6 +169,20 @@ app.get('/history/all', function (req, res) {
     }
 });
 
+app.get('/history/pending', async function (req, res) {
+    if (req.session.user && req.session.user.role == 'student') {
+        db.history.findAll({ where: { UserId: req.session.user.id, status: "pending" } }).then(async requests => {
+            res.json(await getBooksFromRequests(requests));
+        });
+    } else if (req.session.user && req.session.user.role == 'teacher') {
+        db.history.findAll({ where: { status: "pending" } }).then(async requests => {
+            res.json(await getBooksFromRequests(requests));
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
 app.get('/history/approved', async function (req, res) {
     if (req.session.user && req.session.user.role == 'student') {
         db.history.findAll({ where: { UserId: req.session.user.id, status: "approved" } }).then(async requests => {

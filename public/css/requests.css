@@ -1,0 +1,13 @@
+body{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+
+#requests{
+    width: 100%;
+    max-width: 1000px;
+}
