@@ -10,6 +10,16 @@ const initialize = require('./initializeDb.js');
 
 const app = express();
 
+
+
+app.use(session({
+    resave: true,
+    saveUninitialized: true,
+    secret: "secret"
+}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(express.static('public'));
 
 app.get('/book/:id',function(req,res){
@@ -23,6 +33,12 @@ app.get('/book/:id',function(req,res){
 
 
 });
+
+
+app.post('/request', async function(req,res){
+    await db.history.create({status: "pending", date: new Date(), bookId: req.body.bookId, userId: req.session.userId});
+    res.status(200).end();  
+})
 
 
 
