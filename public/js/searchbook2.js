@@ -29,18 +29,15 @@ async function performSearchByInterests() {
             let mainDiv = document.getElementById('main-card-div');
             mainDiv.innerHTML = "";
 
-            let books = data;
-
+            let books = data.slice(0,4);
+            let counter = 0;
             books.forEach(book => {
-                if (book.volumeInfo.description == undefined) {
-                    book.volumeInfo.description = "No description available"
-                }
                 console.log(book)
                 mainDiv.innerHTML += `
                     <article id="book-${counter}" class="brick entry" data-animate-el>
                         <div class="entry__thumb slika">
                             <a id="image-${counter}" href="single-standard.html" class="thumb-link">
-                                <img src="${book.volumeInfo.imageLinks.thumbnail}"
+                                <img src="${book.image}"
                                     alt="">
                             </a>
                         </div>
@@ -52,17 +49,16 @@ async function performSearchByInterests() {
                                     </span>
                                     <span class="byline">
                                         By:
-                                        <a href="#0">${book.volumeInfo.authors}</a>
+                                        <a href="#0">${book.author}</a>
                                     </span>
                                 </div>
-                                <h1 class="entry__title"><a>${book.volumeInfo.title}</a></h1>
+                                <h1 class="entry__title"><a>${book.title}</a></h1>
                                 <b><a id="read-more-${counter}" class="read-more-button" class="entry__more-link">Request this book</a></b>
                             </div>
                             <div class="entry__excerpt">
                                 <p id="text-${counter}" style="font-style:normal">
-                                    ${book.volumeInfo.description.substring(0, 400)}...
+                                    ${book.summary.substring(0, 400)}...
                 
-                    <b><a id="button-${counter}" class="show-more-button" class="entry__more-link">Show more</a></b>
                 
             
                                     </p>
