@@ -18,7 +18,7 @@ const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
 
 app.use(express.static('public'));
-
+app.use(express.static('public/html'));
 app.get('/book/:id', function (req, res) {
     res.json(getBookById(req.params.id));
 });
@@ -104,7 +104,7 @@ async function getBookById(id) {
                 image: response.data.volumeInfo.imageLinks.thumbnail
             }
         })
-    console.log(book);
+    
     return book;
 }
 
@@ -156,15 +156,21 @@ app.get('/book/search/:name', async function (req, res) {
 })
 
 
-app.get('/book/history', async function (req, res) {
-    let books = await db.history.findAll({
+app.get('/user/history', async function (req, res) {
+ let books = await db.history.findAll({
         where: {
-            UserId: req.session.userId,
+            UserId: 1,
             status: 'approved'
         }
     })
+   
+    let bookList = [];
 
-    res.send(books);
+    for(let i=0;i<books.length;i++){
+        let book = await getBookById(books[i].bookId);
+        bookList.push(book);
+    }
+    res.json(bookList); 
     return res.end();
 });
     
