@@ -12,12 +12,18 @@ const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
 
-
+app.use(bodyParser.json());
 const OpenAI = require('openai');
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.use(express.static('public'));
+app.use(express.static('public/html'));
 
+app.use(session({
+    resave: true,
+    saveUninitialized: true,
+    secret: "secret"
+}));
 
 /**
  * User login and registration
@@ -37,8 +43,10 @@ app.post('/register', function (req, res) {
 );
 
 app.post('/login', function (req, res) {
-    const { email, password } = req.body;
+    const email = req.body.email;
+    const password = req.body.password;
     db.user.findOne({ where: { email: email } }).then(user => {
+       // console.log(user)
         if (user && password == user.password) {
             req.session.user = user;
             req.session.userId = user.userId;
@@ -171,11 +179,12 @@ app.get('/history/approved', async function (req, res) {
 });
 
 app.get('/history/ongoing', async function (req, res) {
-    if (req.session.user && req.session.user.role == 'student') {
+    console.log(req.session.user)
+    if (req.session!=null && req.session.user && req.session.user.role == 'student') {
         db.history.findAll({ where: { UserId: req.session.user.id, status: "approved", graded: false } }).then(requests => {
             res.json(requests);
         });
-    } else if (req.session.user && req.session.user.role == 'teacher') {
+    } else if (req.session!=null && req.session.user && req.session.user.role == 'teacher') {
         db.history.findAll({ where: { status: "approved", graded: false } }).then(requests => {
             res.json(requests);
         });
@@ -185,6 +194,7 @@ app.get('/history/ongoing', async function (req, res) {
 });
 
 app.get('/history/graded', async function (req, res) {
+    
     if (req.session.user && req.session.user.role == 'student') {
         db.history.findAll({ where: { UserId: req.session.user.id, graded: true } }).then(requests => {
             res.json(requests);

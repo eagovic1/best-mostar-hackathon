@@ -1,9 +1,12 @@
 let globalBooks = [];
 
+
+
 window.onload = function() {  
 
 
-    let ajax = new XMLHttpRequest();
+    
+
     let counter = 0;
     ajax.onreadystatechange = () =>{
         if(ajax.readyState == 4 && ajax.status == 200){
@@ -61,7 +64,7 @@ window.onload = function() {
 
         }
     }
-    ajax.open('GET', '/user/history',true);
+    ajax.open('GET', '/history/approved',true);
     ajax.setRequestHeader('Content-Type', 'application/json');  
     ajax.send();     
 
