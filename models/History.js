@@ -5,6 +5,7 @@ module.exports = function(sequelize,DataTypes){
        
         status:Sequelize.STRING,
         date:Sequelize.DATE,
+        bookId:Sequelize.STRING,
         
     })
     return History;
