@@ -1,0 +1,21 @@
+.icon {
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #C5A992;
+    width: 80px; /* Adjust the size of the circular container */
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon img {
+    max-width: 60%; /* Adjust the size of the icon inside the container */
+    max-height: 60%;
+    border-radius: 50%;
+  }
+
+  .selected {
+    border: 2px solid #007bff;
+  }
