@@ -4904,7 +4904,7 @@ body.search-is-visible .s-header__search-inner {
     display: flex;
 }
 
-#search-input {
+#search-input, #search-input-field {
     padding: 10px;
     float: left;
     width: 100%;

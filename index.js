@@ -132,7 +132,8 @@ app.post('/books/params', async (req, res) => {
         if (!google_response.data.items[0].volumeInfo.imageLinks || !google_response.data.items[0].volumeInfo.imageLinks.thumbnail) continue;
         const bookWithImage = {
             ...book,
-            image: google_response.data.items[0].volumeInfo.imageLinks.thumbnail
+            image: google_response.data.items[0].volumeInfo.imageLinks.thumbnail,
+            id : google_response.data.items[0].id
         };
         final_books.push(bookWithImage);
     }

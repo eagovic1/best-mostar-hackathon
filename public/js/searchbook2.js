@@ -1,7 +1,26 @@
+async function login() {
+    await fetch("/login", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: 'test',
+            password: 'test'
+        })
+    }
+    ).then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+}
+
+
 async function performSearchByInterests() {
     const difficulty = document.querySelector('.btn.btn-primary.btn-rounded.clicked').textContent;
     const length = document.querySelector('.btn.btn-secondary.btn-rounded.clicked').textContent;
     const interests = document.getElementById('search-input').value;
+    await login();
     var imagesWithoutOne = document.querySelectorAll('img:not([src*="1"])');
     var resultArray = [];
     imagesWithoutOne.forEach(function (image) {
@@ -57,7 +76,7 @@ async function performSearchByInterests() {
                             </div>
                             <div class="entry__excerpt">
                                 <p id="text-${counter}" style="font-style:normal">
-                                    ${book.summary.substring(0, 400)}...
+                                    ${book.summary}...
                 
                 
             
@@ -69,5 +88,29 @@ async function performSearchByInterests() {
                 `
                 counter += 1;
             });
+            let images = document.querySelectorAll('.read-more-button');
+
+            images.forEach(image => {
+                image.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    let bookId = e.target.id.substr(e.target.id.length - 1);
+                    console.log(bookId, "bookid")
+                    let ajaxLocal = new XMLHttpRequest();
+                    ajaxLocal.onreadystatechange = () => {
+                        if (ajaxLocal.readyState == 4 && ajaxLocal.status == 200) {
+                            alert("Request for book approval sent succesfully");
+                        }
+                        else if(ajaxLocal.readyState == 4 && ajaxLocal.status == 400){
+                            alert("Book already requested")
+                        }
+                    }
+                    ajaxLocal.open('POST', '/request/book', true);
+                    ajaxLocal.send({bookId: books[bookId].id});
+
+
+                    
+                })
+            })
+        
         })
 }

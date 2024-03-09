@@ -3,7 +3,7 @@ let serachButton = document.getElementById('search-button');
 
 let cardDiv = document.getElementById('main-card-div');
 
-let searchField = document.getElementById('search-input');
+let searchField = document.getElementById('search-input-field');
 
 let globalBooks = [];
 
