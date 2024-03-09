@@ -30,14 +30,14 @@ window.onload = async function () {
         if (ajax.readyState == 4 && ajax.status == 200) {
             globalBooks = JSON.parse(ajax.responseText);
             let mainDiv = document.getElementById('main-card-div');
-            console.log(globalBooks)
+          
             let books = globalBooks;
 
             books.forEach(book => {
                 mainDiv.innerHTML += `
                     <article id="book-${counter}" class="brick entry" data-animate-el>
                         <div class="entry__thumb">
-                            <a href="single-standard.html" class="thumb-link">
+                            <a id="image-${counter}" href="single-standard.html" class="thumb-link">
                                 <img src="${book.image}"
                                     alt="">
                             </a>
@@ -68,6 +68,17 @@ window.onload = async function () {
             });
 
             const buttons = document.querySelectorAll('.read-more-button');
+
+            const images = document.querySelectorAll('.thumb-link');
+
+            images.forEach(image => {
+                image.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    let bookId = e.target.id.substr(e.target.id.length - 1);
+                
+                });
+            })
+
 
             buttons.forEach(button => {
                 button.addEventListener('click', (e) => {

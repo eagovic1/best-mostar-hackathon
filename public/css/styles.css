@@ -2980,7 +2980,7 @@ img.u-pull-left {
 .bricks-wrapper .entry__thumb .thumb-link::after {
     z-index        : 1;
     display        : block;
-    content        : "...";
+    content        : "";
     font-family    : georgia, serif;
     font-size      : 2.4rem;
     height         : 90px;
@@ -4892,7 +4892,37 @@ body.search-is-visible .s-header__search-inner {
 .entry__media figure {
     margin : 0;
 }
+.content-primary,.content-secondary{
+    display: none;
+}
+#search-container {
+    text-align: center;
+    display: flex;
+}
 
+#search-input {
+    padding: 10px;
+    float: left;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 5px 0 0 5px; /* Rounded corners on the left */
+    border: 1px solid #ccc; /* Add a border for visual separation */
+}
+
+#search-button {
+    padding: 10px;
+    display: flex;
+    font-size: 16px;
+    float: right;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0; /* Rounded corners on the right */
+    background-color: #000000; /* Green background color, you can customize */
+    color: white;
+    border: 1px solid #000000; /* Matching border color */
+}
 .entry__media img {
     vertical-align : bottom;
     margin-bottom  : 0;
@@ -5427,12 +5457,29 @@ body.search-is-visible .s-header__search-inner {
 .difficulty-option:hover {
     background-color: #ddd;
 }
+.btn.btn-primary.circular-btn, .btn.btn-secondary.circular-btn{
+    border-radius: 50%;
+    width: 10vh;
+    height: 10vh;
+    align-items: center;
+    justify-content: center;
+}
+#form,#search{
+    width:20vh;
+    height: 20vh;
+}
+#searchimg{
+    margin-top:12.5%;
+}
 .column.lg-12{
     padding: 0;
     margin-top: 5%;
 }
 .col-12.text-center{
     width: 100%;
+}
+.s-content.s-content--page{
+    padding-top: 7%;
 }
 #diff{
     text-align: center;
