@@ -46,7 +46,6 @@ app.post('/login', function (req, res) {
     const email = req.body.email;
     const password = req.body.password;
     db.user.findOne({ where: { email: email } }).then(user => {
-       // console.log(user)
         if (user && password == user.password) {
             req.session.user = user;
             req.session.userId = user.userId;
@@ -179,7 +178,6 @@ app.get('/history/approved', async function (req, res) {
 });
 
 app.get('/history/ongoing', async function (req, res) {
-    console.log(req.session.user)
     if (req.session!=null && req.session.user && req.session.user.role == 'student') {
         db.history.findAll({ where: { UserId: req.session.user.id, status: "approved", graded: false } }).then(requests => {
             res.json(requests);
