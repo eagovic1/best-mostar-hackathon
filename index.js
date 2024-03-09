@@ -239,7 +239,8 @@ app.post('/request/book', function (req, res) {
             if (request) {
                 return res.status(400).json({ error: 'Request already pending' });
             } else {
-                let bookName = await getBookById(bookId).title;
+                let book = await getBookById(bookId);
+                let bookName = book.title;
                 db.history.create({ status: 'pending', date: new Date(), bookId: bookId, UserId: req.session.user.id }).then(request => {
                     notifyTeacher("eagovic1@etf.unsa.ba", req.session.user.name, bookName);
                     return res.status(200).json({ success: true });
