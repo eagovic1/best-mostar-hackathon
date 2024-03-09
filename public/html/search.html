@@ -18,13 +18,25 @@
         .icon {
             display: inline-block;
             margin: 0 10px;
-            width: 100px; /* Fixed width */
-            height: 100px; /* Fixed height */
+            width: 70%; /* Fixed width */
+            height: 70%; /* Fixed height */
+            position: relative;
             background-color: #c8b3a1;
             border-radius: 50%;
             overflow: hidden; /* Hide overflowing content */
             cursor: pointer; /* Add cursor pointer for clickable effect */
             transition: background-color 0.3s ease; /* Add transition for hover effect */
+        }
+
+        .icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 5px solid #c8b3a1; /* Adjust border size as needed */
+            border-radius: 50%;
         }
 
         .icon img {
@@ -108,7 +120,6 @@
       }
   }
 </script>
-
 
 </body>
 </html>
