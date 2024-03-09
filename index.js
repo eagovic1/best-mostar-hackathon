@@ -18,6 +18,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.use(express.static('public'));
 
+
 /**
  * User login and registration
  */
@@ -55,12 +56,8 @@ app.post('/logout', function (req, res) {
 
 
 /**
- * Book details
+ * Book detail search
  */
-app.get('/book/:id', function (req, res) {
-    res.json(getBookById(req.params.id));
-});
-
 async function getBookById(id) {
     let book = await axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)
         .then(function (response) {
@@ -71,9 +68,76 @@ async function getBookById(id) {
                 image: response.data.volumeInfo.imageLinks.thumbnail
             }
         })
-    console.log(book);
     return book;
 }
+
+async function getBooksByTitle(title) {
+    let booksResponse = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${title}`)
+
+    return booksResponse;
+}
+
+app.get('/book/:id', function (req, res) {
+    res.json(getBookById(req.params.id));
+});
+
+app.get('/books/:name', async function (req, res) {
+    //let response = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${req.params.name}`);
+    let response = await getBooksByTitle(req.params.name);
+    let books = response.data.items;
+
+    let uniqueBooks = [];
+
+    for (let i = 0; i < books.length; i++) {
+        let unique = true;
+        for (let j = 0; j < uniqueBooks.length; j++) {
+            if (uniqueBooks[j].volumeInfo.title.toLowerCase() === books[i].volumeInfo.title.toLowerCase() || books[i].volumeInfo.title.toLowerCase().includes(uniqueBooks[j].volumeInfo.title.toLowerCase())) {
+                unique = false;
+                break;
+            }
+        }
+        if (unique) {
+            uniqueBooks.push(books[i]);
+        }
+    }
+    uniqueBooks.forEach(element => {
+        console.log(element.volumeInfo.title)
+    });
+
+    res.json(uniqueBooks);
+    return res.end();
+})
+
+app.post('/books/params', async (req, res) => {
+    const { genre, difficulty, length } = req.body;
+    const prompt = "Give me recommendations for 5 books based on these parameters. Genre: " + genre + ". Difficulty: " + difficulty + ". Length: " + length + ". Give me response in JSON format" +
+        "Like this {\"books\": [{\"title: Title\", \"author\": author}, {\"title: Title\", \"author\": author}]}. Dont put anything else in response besides this js file";
+    const stream = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: `${prompt}` }],
+    });
+    const books = JSON.parse(stream.choices[0].message.content);
+
+    let final_books = [];
+    for (const book of books.books) {
+        /*
+        const google_response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
+            params: {
+                q: book.title
+            }
+        });
+        */
+        const google_response = await getBooksByTitle(book.title);
+        if (!google_response.data.items[0].volumeInfo.imageLinks || !google_response.data.items[0].volumeInfo.imageLinks.thumbnail) continue;
+        const bookWithImage = {
+            ...book,
+            image: google_response.data.items[0].volumeInfo.imageLinks.thumbnail
+        };
+        final_books.push(bookWithImage);
+    }
+    res.json(final_books);
+});
+
 
 /**
  * Book request history
@@ -134,8 +198,9 @@ app.get('/history/graded', async function (req, res) {
     }
 });
 
+
 /**
- * Sending mail notifications
+ * Sending / modyfing requests
  */
 const { sendMail } = require('./mail');
 
@@ -191,35 +256,6 @@ app.put('/request/book/status', function (req, res) {
     }
 });
 
-/**
- * Book search
- */
-app.get('/book/search/:name', async function (req, res) {
-    let response = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${req.params.name}`);
-    let books = response.data.items;
-
-    let uniqueBooks = [];
-
-    for (let i = 0; i < books.length; i++) {
-        let unique = true;
-        for (let j = 0; j < uniqueBooks.length; j++) {
-            if (uniqueBooks[j].volumeInfo.title.toLowerCase() === books[i].volumeInfo.title.toLowerCase() || books[i].volumeInfo.title.toLowerCase().includes(uniqueBooks[j].volumeInfo.title.toLowerCase())) {
-                unique = false;
-                break;
-            }
-        }
-        if (unique) {
-            uniqueBooks.push(books[i]);
-        }
-    }
-    uniqueBooks.forEach(element => {
-        console.log(element.volumeInfo.title)
-    });
-
-    res.json(uniqueBooks);
-    return res.end();
-
-})
 
 /**
  * Quiz generation
