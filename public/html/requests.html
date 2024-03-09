@@ -11,7 +11,7 @@
 
 <body>
     <div id="wrapper">
-        <div id="requests">
+        <div id="pending">
             <table class="table">
                 <thead>
                     <tr>
@@ -21,19 +21,7 @@
                         <th>Reject</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>Introduction to Programming</td>
-                        <td><button type="button" class="btn btn-success">Approve</button></td>
-                        <td><button type="button" class="btn btn-danger">Reject</button></td>
-                    </tr>
-                    <tr>
-                        <td>Jane Smith</td>
-                        <td>Data Structures and Algorithms</td>
-                        <td><button type="button" class="btn btn-success">Approve</button></td>
-                        <td><button type="button" class="btn btn-danger">Reject</button></td>
-                    </tr>
+                <tbody id="pending-requests">
                 </tbody>
             </table>
         </div>

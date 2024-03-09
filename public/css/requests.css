@@ -6,8 +6,12 @@ body{
     justify-content: center;
 }
 
+#pending{
+    width: 100%;
+    max-width: 1000px;
+}
 
-#requests{
+#approved{
     width: 100%;
     max-width: 1000px;
 }

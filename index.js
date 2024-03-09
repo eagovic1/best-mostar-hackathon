@@ -72,7 +72,7 @@ async function getBookById(id) {
             }
         }).catch(function (error) {
             console.log(error);
-            return { error: 'Book not found'};
+            return { error: 'Book not found' };
         });
     return book;
 }
