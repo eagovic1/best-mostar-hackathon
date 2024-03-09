@@ -5322,6 +5322,109 @@ body.search-is-visible .s-header__search-inner {
     padding-top : var(--vspace-1_75);
 }
 
+#h1, #h2{
+    text-align: center;
+}
+
+.icon-container {
+    display: flex;
+    padding: 20px; /* Adjust padding as needed */
+    border-radius: 10px; /* Rounded corners */
+    text-align: center;
+    justify-content: space-around;
+}
+
+.krug{
+    width: calc(height)
+}
+
+.icon {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    width: 70%; /* Fixed width */
+    height: 55%; /* Fixed height */
+    position: relative;
+    background-color: #d5d8da;
+    border-radius: 50%;
+    overflow: hidden; /* Hide overflowing content */
+    cursor: pointer; /* Add cursor pointer for clickable effect */
+    transition: background-color 0.3s ease; /* Add transition for hover effect */
+}
+
+.icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 5px solid #d5d8da; /* Adjust border size as needed */
+    border-radius: 50%;
+}
+
+.icon img {
+    width: 70%; /* Make the image fill the container */
+    height: 70%; /* Make the image fill the container */
+    margin-top: 17.5%;
+}
+
+.icon-name {
+    margin-top: 10%; /* Adjust margin as needed */
+    font-size: 14px; /* Adjust font size as needed */
+}
+
+.difficulty-label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.difficulty-options {
+    display: flex;
+    justify-content: space-between;
+}
+
+.difficulty-option {
+    width: 20%;
+    height: 40px;
+    border-radius: 10%;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.col-12.d-flex.justify-content-between{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    width: 100%;
+}
+
+.btn.btn-primary.btn-rounded,.btn.btn-secondary.btn-rounded{
+    border-radius: 10%;
+    background-color: #d5d8da;
+    margin:0;
+}
+.difficulty-option:hover {
+    background-color: #ddd;
+}
+.column.lg-12{
+    padding: 0;
+    margin-top: 5%;
+}
+.col-12.text-center{
+    width: 100%;
+}
+#diff{
+    text-align: center;
+    width: 100%;
+}
+#selectedDifficulty {
+    display: none;
+}
 /* ------------------------------------------------------------------- 
  * responsive:
  * comments
