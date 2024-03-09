@@ -28,6 +28,7 @@ app.post('/login', function (req, res) {
     db.user.findOne({ where: { email: email } }).then(user => {
         if (user && password == user.password) {
             req.session.user = user;
+            req.session.userId = user.userId;
             res.json(user);
         } else {
             res.status(401).json({ error: 'Invalid credentials' });
@@ -123,7 +124,6 @@ function notifyStudent(studentMail, bookName, status) {
     sendMail(from, to, subject, `Teacher has changed the status of your request for the book ${bookName} to ${status}!`);
 }
 
-
 app.get('/book/search/:name', async function (req, res) {
 
     let response = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${req.params.name}`);
@@ -145,9 +145,7 @@ app.get('/book/search/:name', async function (req, res) {
          if(unique){
               uniqueBooks.push(books[i]);
          }
-    }
-    
-    
+    }  
     uniqueBooks.forEach(element => {
         console.log(element.volumeInfo.title)
     });
@@ -155,12 +153,21 @@ app.get('/book/search/:name', async function (req, res) {
     res.json(uniqueBooks);
     return res.end();
     
-
-   // let books = response.data.items.foreach(book => {})
-  //  console.log('č'.toLowerCase());
-   
 })
 
+
+app.get('/book/history', async function (req, res) {
+    let books = await db.history.findAll({
+        where: {
+            UserId: req.session.userId,
+            status: 'approved'
+        }
+    })
+
+    res.send(books);
+    return res.end();
+});
+    
 app.get('/quiz/:id',async function (req, res) {
 
     let bookInfo = await axios.get(`https://www.googleapis.com/books/v1/volumes/${req.params.id}`)
@@ -168,9 +175,6 @@ app.get('/quiz/:id',async function (req, res) {
     let name = bookInfo.data.volumeInfo.title;  
 
     const prompt = "Create long summary of the book and a quiz for the book " + name + "in English language with 5 detailed questions from easiest to hardest, give long answers to questions in JSON format, give questions only about the plot of the book. Like this {\"summary\": \"answer\",\"questions\": [{\"question\": \"Question\", \"answer\": \"Your answer\"}, {\"question\": \"Question\", \"answer\": \"Your answer\"}]}";
-
-    //const prompt = "Create one"
-
 
     const stream = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
