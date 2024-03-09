@@ -2977,6 +2977,8 @@ img.u-pull-left {
     left       : 0;
 }
 
+
+
 .bricks-wrapper .entry__thumb .thumb-link::after {
     z-index        : 1;
     display        : block;
@@ -2999,6 +3001,8 @@ img.u-pull-left {
     left           : 50%;
     top            : 50%;
 }
+
+
 
 .bricks-wrapper .entry__thumb:hover .thumb-link::before {
     opacity    : 1;

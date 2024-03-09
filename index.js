@@ -6,6 +6,8 @@ const db = require('./db.js');
 const initialize = require('./initializeDb.js');
 const dotenv = require('dotenv');
 
+
+
 dotenv.config();
 const app = express();
 
