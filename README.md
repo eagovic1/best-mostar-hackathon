@@ -1,3 +1,10 @@
+## Technologies Used
+- HTML, CSS
+- JavaScript
+- Node.js
+- Express
+- MySQL
+
 ## Installation Instructions
 
 1. **Clone the Repository:**
