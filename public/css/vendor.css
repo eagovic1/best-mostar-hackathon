@@ -767,7 +767,7 @@ button.swiper-pagination-bullet {
 }
 
 
-a.read-more-button{
+a.read-more-button, a.read-more-button-interests{
   
         margin-top: 0px;
         padding-top: 0px;
@@ -781,7 +781,7 @@ a.read-more-button{
         transition: background-color 0.3s ease; /* Smooth transition for hover effect */
     }
     
-    a.read-more-button:hover {
+    a.read-more-button:hover, a.read-more-button-interests:hover {
         background-color: #b5b5b5; 
         text-decoration: none;
         color: black;/* Darker color on hover */

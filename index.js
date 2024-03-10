@@ -230,7 +230,9 @@ function notifyStudent(studentMail, bookName, status) {
 
 app.post('/request/book', function (req, res) {
     if (req.session.user) {
-        const { bookId } = req.body;
+        const  bookId  = req.body.bookId;
+       
+        
         db.history.findOne({ where: { UserId: req.session.user.id, status: 'pending' } }).then(async request => {
             if (request) {
                 return res.status(400).json({ error: 'Request already pending' });
