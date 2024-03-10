@@ -82,7 +82,7 @@ fetch("/login", {
                     <td>${_request.title}</td>
                     <td>${_request.date}</td>
                     <td>${(Boolean)(_request.graded)}</td>
-                    <td><button type="button" class="btn btn-info">Details</button></td>
+                    <td><button type="button" class="btn btn-dark">Details</button></td>
                 </tr>
                     `;
                         document.getElementById("approved-requests").appendChild(row);

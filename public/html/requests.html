@@ -7,10 +7,84 @@
     <title>Requests</title>
     <link rel="stylesheet" href="../css/requests.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        #wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 50px auto;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-collapse: collapse;
+            border: 1px solid #dee2e6; /* Add border */
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+            font-family: 'Courier New', monospace;
+        }
+
+        th {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: lightgray; /* Light gray for even rows */
+        }
+
+        tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .approve, .reject {
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+
+        .approve:hover {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .reject:hover {
+            background-color: #dc3545;
+            color: #fff;
+        }
+    </style>
 </head>
 
 <body>
     <div id="wrapper">
+        <h1>Active Requests</h1>
         <div id="pending">
             <table class="table">
                 <thead>
@@ -24,9 +98,12 @@
                     </tr>
                 </thead>
                 <tbody id="pending-requests">
+                    <!-- Add your dynamic content here -->
                 </tbody>
             </table>
         </div>
+
+        <h1>Assigned Books</h1>
         <div id="approved">
             <table class="table">
                 <thead>
@@ -35,10 +112,11 @@
                         <th>Book Name</th>
                         <th>Date</th>
                         <th>Graded</th>
-                        <th></th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="approved-requests">
+                    <!-- Add your dynamic content here -->
                 </tbody>
             </table>
         </div>

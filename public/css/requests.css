@@ -15,3 +15,7 @@ body{
     width: 100%;
     max-width: 1000px;
 }
+
+.btn-info{
+    color: #232624;
+}
