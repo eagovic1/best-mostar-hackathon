@@ -153,6 +153,7 @@ async function getBooksFromRequests(requests) {
         books[books.length - 1]["name"] = request["User"]["dataValues"]["name"] + " " + request["User"]["dataValues"]["surname"];
         books[books.length - 1]["date"] = request["date"];
         books[books.length - 1]["id"] = request["id"];
+        books[books.length - 1]["bookId"] = request["bookId"];
     }
     return books;
 }
@@ -300,13 +301,15 @@ app.put('/request/book/status', function (req, res) {
  */
 app.get('/quiz/:id', async function (req, res) {
     let bookInfo = await getBookById(req.params.id);
-    let name = bookInfo.data.volumeInfo.title;
+    let name = bookInfo.title;
     const prompt = "Create long summary of the book and a quiz for the book " + name + "in English language with 5 detailed questions from easiest to hardest, give long answers to questions in JSON format, give questions only about the plot of the book. Like this {\"summary\": \"answer\",\"questions\": [{\"question\": \"Question\", \"answer\": \"Your answer\"}, {\"question\": \"Question\", \"answer\": \"Your answer\"}]}";
     const stream = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [{ role: 'user', content: `${prompt}` }],
     });
     const quiz = JSON.parse(stream.choices[0].message.content);
+    quiz["image"] = bookInfo.image;
+    quiz["title"] = bookInfo.title;
     res.json(quiz);
 
 });

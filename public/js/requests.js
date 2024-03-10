@@ -19,6 +19,12 @@ function requestStatusChange(requestId, status) {
         });
 }
 
+function openBookDetails(bookId) {
+    console.log(bookId);
+    localStorage.setItem("bookId", bookId);
+    window.location.href = "/profBookDetails.html";
+}
+
 fetch("/login", {
     method: "POST",
     headers: {
@@ -82,7 +88,7 @@ fetch("/login", {
                     <td>${_request.title}</td>
                     <td>${_request.date}</td>
                     <td>${(Boolean)(_request.graded)}</td>
-                    <td><button type="button" class="btn btn-info">Details</button></td>
+                    <td><button onclick="openBookDetails('${_request.bookId}')" type="button" class="btn btn-info">Details</button></td>
                 </tr>
                     `;
                         document.getElementById("approved-requests").appendChild(row);
