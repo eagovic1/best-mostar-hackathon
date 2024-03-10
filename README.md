@@ -4,6 +4,7 @@
 - Node.js
 - Express
 - MySQL
+- OpenAI API
 
 ## Installation Instructions
 
