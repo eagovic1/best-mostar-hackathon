@@ -19,7 +19,7 @@ async function login() {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            email: 'test',
+            email: 'eagovic1@etf.unsa.ba',
             password: 'test'
         })
     }

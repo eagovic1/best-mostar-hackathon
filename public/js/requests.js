@@ -31,7 +31,7 @@ fetch("/login", {
         "Content-Type": "application/json",
     },
     body: JSON.stringify({
-        email: "test",
+        email: "aboudellaa1@etf.unsa.ba",
         password: "test"
     })
 }).then((response) => response.json())
@@ -88,7 +88,7 @@ fetch("/login", {
                     <td>${_request.title}</td>
                     <td>${_request.date}</td>
                     <td>${(Boolean)(_request.graded)}</td>
-                    <td><button onclick="openBookDetails('${_request.bookId}')" type="button" class="btn btn-info">Details</button></td>
+                    <td><button onclick="openBookDetails('${_request.bookId}')" type="button" class="btn btn-dark">Details</button></td>
                 </tr>
                     `;
                         document.getElementById("approved-requests").appendChild(row);
