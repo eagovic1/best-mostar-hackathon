@@ -146,18 +146,28 @@ app.post('/books/params', async (req, res) => {
  */
 async function getBooksFromRequests(requests) {
     let books = [];
-    for (let request of requests)
-        books.push(await getBookById(request.bookId));
+    for (let request of requests) {
+        let book = await getBookById(request.bookId);
+        books.push(book);
+        console.log(request["User"])
+        books[books.length - 1]["name"] = request["User"]["dataValues"]["name"] + " " + request["User"]["dataValues"]["surname"];
+        books[books.length - 1]["date"] = request["date"];
+        books[books.length - 1]["id"] = request["id"];
+    }
     return books;
 }
 
 app.get('/history/all', function (req, res) {
     if (req.session.user && req.session.user.role == 'student') {
-        db.history.findAll({ where: { UserId: req.session.user.id } }).then(async requests => {
+        db.history.findAll({
+            where: { UserId: req.session.user.id },
+            include: [{ model: db.user }]
+        }).then(async requests => {
+            console.log(requests)
             res.json(await getBooksFromRequests(requests));
         });
     } else if (req.session.user && req.session.user.role == 'teacher') {
-        db.history.findAll().then(async requests => {
+        db.history.findAll({ include: [{ model: db.user }] }).then(async requests => {
             res.json(await getBooksFromRequests(requests));
         });
     } else {
@@ -167,11 +177,11 @@ app.get('/history/all', function (req, res) {
 
 app.get('/history/pending', async function (req, res) {
     if (req.session.user && req.session.user.role == 'student') {
-        db.history.findAll({ where: { UserId: req.session.user.id, status: "pending" } }).then(async requests => {
+        db.history.findAll({ where: { UserId: req.session.user.id, status: "pending" }, include: [{ model: db.user }] }).then(async requests => {
             res.json(await getBooksFromRequests(requests));
         });
     } else if (req.session.user && req.session.user.role == 'teacher') {
-        db.history.findAll({ where: { status: "pending" } }).then(async requests => {
+        db.history.findAll({ where: { status: "pending" }, include: [{ model: db.user }] }).then(async requests => {
             res.json(await getBooksFromRequests(requests));
         });
     } else {
@@ -181,11 +191,11 @@ app.get('/history/pending', async function (req, res) {
 
 app.get('/history/approved', async function (req, res) {
     if (req.session.user && req.session.user.role == 'student') {
-        db.history.findAll({ where: { UserId: req.session.user.id, status: "approved" } }).then(async requests => {
+        db.history.findAll({ where: { UserId: req.session.user.id, status: "approved" }, include: [{ model: db.user }] }).then(async requests => {
             res.json(await getBooksFromRequests(requests));
         });
     } else if (req.session.user && req.session.user.role == 'teacher') {
-        db.history.findAll({ where: { status: "approved" } }).then(async requests => {
+        db.history.findAll({ where: { status: "approved" }, include: [{ model: db.user }] }).then(async requests => {
             res.json(await getBooksFromRequests(requests));
         });
     } else {
@@ -195,11 +205,11 @@ app.get('/history/approved', async function (req, res) {
 
 app.get('/history/ongoing', async function (req, res) {
     if (req.session != null && req.session.user && req.session.user.role == 'student') {
-        db.history.findAll({ where: { UserId: req.session.user.id, status: "approved", graded: false } }).then(async requests => {
+        db.history.findAll({ where: { UserId: req.session.user.id, status: "approved", graded: false }, include: [{ model: db.user }] }).then(async requests => {
             res.json(await getBooksFromRequests(requests));
         });
     } else if (req.session != null && req.session.user && req.session.user.role == 'teacher') {
-        db.history.findAll({ where: { status: "approved", graded: false } }).then(async requests => {
+        db.history.findAll({ where: { status: "approved", graded: false }, include: [{ model: db.user }] }).then(async requests => {
             res.json(await getBooksFromRequests(requests));
         });
     } else {
@@ -210,11 +220,11 @@ app.get('/history/ongoing', async function (req, res) {
 app.get('/history/graded', async function (req, res) {
 
     if (req.session.user && req.session.user.role == 'student') {
-        db.history.findAll({ where: { UserId: req.session.user.id, graded: true } }).then(async requests => {
+        db.history.findAll({ where: { UserId: req.session.user.id, graded: true }, include: [{ model: db.user }] }).then(async requests => {
             res.json(await getBooksFromRequests(requests));
         });
     } else if (req.session.user && req.session.user.role == 'teacher') {
-        db.history.findAll({ where: { graded: true } }).then(async requests => {
+        db.history.findAll({ where: { graded: true }, include: [{ model: db.user }] }).then(async requests => {
             res.json(await getBooksFromRequests(requests));
         });
     } else {
