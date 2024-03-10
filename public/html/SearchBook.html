@@ -93,13 +93,6 @@
     
             </div> <!-- end s-header__search -->
 
-            <a class="s-header__menu-toggle" href="#0"><span>Menu</span></a>
-            <a class="s-header__search-trigger" href="#">
-                <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.25 19.25L15.5 15.5M4.75 11C4.75 7.54822 7.54822 4.75 11 4.75C14.4518 4.75 17.25 7.54822 17.25 11C17.25 14.4518 14.4518 17.25 11 17.25C7.54822 17.25 4.75 14.4518 4.75 11Z"></path>
-                </svg>
-            </a>
-
         </header> <!-- end s-header -->
 
 
@@ -136,7 +129,7 @@
                                 <!-- Circular Icons with Images -->
                                 <div class="krug">
                                   <div class="icon" onclick="showSearch()" id="search">
-                                      <img src="../images/search.png" alt="Icon 1" id="searchimg">
+                                      <img id="search-by-name" src="../images/search.png" alt="Icon 1" id="searchimg">
                                   </div>
                             </div>
                         </div>
@@ -229,7 +222,7 @@
                                         </div>
                                     </div>
                                     <div class="column lg-12">
-                                        <input name="submit" id="submit" class="btn btn--primary btn-wide btn--large u-fullwidth" value="Search" type="submit">
+                                        <button id="search-button-interests" class="btn btn--primary btn-wide btn--large u-fullwidth" >Search</button>
                                     </div>
 
                             </div> <!-- end content-primary -->
@@ -238,13 +231,24 @@
                         </article> <!-- end entry -->
                         <div class="content-secondary">
                                 <div id="search-container">
-                                    <input type="text" id="search-input" placeholder="Enter your search...">
-                                    <button id="search-button" onclick="performSearch()">Search</button>
+                                    <input type="text" id="search-input-field" placeholder="Enter your search...">
+                                    <button id="search-button">Search</button>
                                 </div>
                             </div> <!-- end content-primary -->
                     </div>
                 </div> <!-- end entry-wrap -->
         </section> <!-- end s-content -->
+
+        <div id="bricks" class="bricks" style="margin-top: 0px; padding-top: 0px;">
+            <div class="masonry">
+                <div id="main-card-div" class="bricks-wrapper" data-animate-block>
+                    <div class="grid-sizer"></div>
+                    <article class="brick entry" data-animate-el>
+                       
+                    </article> <!-- end article -->
+                </div> <!-- end bricks-wrapper -->
+            </div> <!-- end masonry-->
+        </div> <!-- end bricks -->
 
 
         <!-- # site-footer
@@ -277,6 +281,7 @@
     ================================================== -->
     <script src="../js/plugins.js"></script>
     <script src="../js/main.js"></script>
+   
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -300,10 +305,11 @@
         var buttons = document.querySelectorAll('.btn-primary');
         buttons.forEach(function(btn) {
             btn.style.backgroundColor = "#d5d8da";
+            btn.classList.remove('clicked');
         });
-
+        button.classList.add('clicked');
         // Darken the clicked button to black
-        button.style.backgroundColor = '#bfc2c3';
+        button.style.backgroundColor = '#7d8778';
     }
     </script>
     <script>
@@ -312,10 +318,10 @@
         var buttons = document.querySelectorAll('.btn-secondary');
         buttons.forEach(function(btn) {
             btn.style.backgroundColor = "#d5d8da";
+            btn.classList.remove('clicked');
         });
-
-        // Darken the clicked button to black
-        button.style.backgroundColor = '#bfc2c3';
+        button.classList.add('clicked');
+        button.style.backgroundColor = '#7d8778';
     }
     </script>
     <script>
@@ -334,15 +340,8 @@
             diff.scrollIntoView({ behavior: 'smooth' });
     }
     </script>
-    <script>
-        function performSearch() {
-            // Get the value from the search input
-            var searchTerm = document.getElementById('search-input').value;
-
-            // Perform your search logic here (e.g., show search results, navigate to a new page, etc.)
-            alert('Performing search for: ' + searchTerm);
-        }
-    </script>
+    
+      <script src="../js/searchbook.js"></script>
       
 </body>
 </html>

@@ -6,6 +6,8 @@ const db = require('./db.js');
 const initialize = require('./initializeDb.js');
 const dotenv = require('dotenv');
 
+
+
 dotenv.config();
 const app = express();
 
@@ -115,9 +117,9 @@ app.get('/books/:name', async function (req, res) {
 })
 
 app.post('/books/params', async (req, res) => {
-    const { genre, difficulty, length } = req.body;
-    const prompt = "Give me recommendations for 5 books based on these parameters. Genre: " + genre + ". Difficulty: " + difficulty + ". Length: " + length + ". Give me response in JSON format" +
-        "Like this {\"books\": [{\"title: Title\", \"author\": author}, {\"title: Title\", \"author\": author}]}. Dont put anything else in response besides this js file";
+    const { genre, difficulty, length, interests } = req.body;
+    const prompt = "Give me recommendations for 5 books based on these parameters. Genre: " + genre + ". Difficulty: " + difficulty + ". Length: " + length + ". Also, my all around interests are:" + interests + " Give me response in JSON format" +
+        "Like this {\"books\": [{\"title: Title\", \"author\": author, \"summary\": summary}, {\"title: Title\", \"author\": author, \"summary\": summary}]}. Summary should be a bit longer. Dont put anything else in response besides this js file";
     const stream = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [{ role: 'user', content: `${prompt}` }],
@@ -126,18 +128,12 @@ app.post('/books/params', async (req, res) => {
 
     let final_books = [];
     for (const book of books.books) {
-        /*
-        const google_response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
-            params: {
-                q: book.title
-            }
-        });
-        */
         const google_response = await getBooksByTitle(book.title);
         if (!google_response.data.items[0].volumeInfo.imageLinks || !google_response.data.items[0].volumeInfo.imageLinks.thumbnail) continue;
         const bookWithImage = {
             ...book,
-            image: google_response.data.items[0].volumeInfo.imageLinks.thumbnail
+            image: google_response.data.items[0].volumeInfo.imageLinks.thumbnail,
+            id : google_response.data.items[0].id
         };
         final_books.push(bookWithImage);
     }
@@ -248,7 +244,9 @@ function notifyStudent(studentMail, bookName, status) {
 
 app.post('/request/book', function (req, res) {
     if (req.session.user) {
-        const { bookId } = req.body;
+        const  bookId  = req.body.bookId;
+       
+        
         db.history.findOne({ where: { UserId: req.session.user.id, status: 'pending' } }).then(async request => {
             if (request) {
                 return res.status(400).json({ error: 'Request already pending' });

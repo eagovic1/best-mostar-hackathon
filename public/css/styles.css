@@ -2977,6 +2977,8 @@ img.u-pull-left {
     left       : 0;
 }
 
+
+
 .bricks-wrapper .entry__thumb .thumb-link::after {
     z-index        : 1;
     display        : block;
@@ -2999,6 +3001,8 @@ img.u-pull-left {
     left           : 50%;
     top            : 50%;
 }
+
+
 
 .bricks-wrapper .entry__thumb:hover .thumb-link::before {
     opacity    : 1;
@@ -4900,7 +4904,7 @@ body.search-is-visible .s-header__search-inner {
     display: flex;
 }
 
-#search-input {
+#search-input, #search-input-field {
     padding: 10px;
     float: left;
     width: 100%;
@@ -5487,6 +5491,45 @@ body.search-is-visible .s-header__search-inner {
 }
 #selectedDifficulty {
     display: none;
+}
+
+#search-button-interests:hover, #search-button:hover{
+    background-color: gray;
+}
+.s-header__description {
+    display: flex;
+    align-items: center;
+}
+
+.s-header__description h3 {
+    margin-right: 10px;
+}
+
+.s-header__description p {
+    font-size: 16px;
+}
+#summary{
+    margin:2%;
+    align-self: center;
+    justify-self: center;
+}
+.s-header__description img {
+    max-width: 100%;
+    height: auto;
+}
+#bricks{
+    padding: 0%;
+}
+.faq-section{
+    margin: 5%;
+}
+#title{
+    align-items: center;
+    text-align: center;
+
+}
+#bookimg{
+    margin: 5%;
 }
 /* ------------------------------------------------------------------- 
  * responsive:
