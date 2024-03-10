@@ -1,6 +1,12 @@
-##E-library web application
 
 
+## E-library web application
+
+This project aims to provide students with a platform to access and read books for their school programs. Unlike traditional methods where professors dictate the reading material, this application allows students to choose books based on their interests and age. They can search for books by title and explore a wide range of options.
+
+The main goal of this project is to encourage young people to read more by giving them the freedom to select books that resonate with them. By offering a personalized reading experience, we hope to foster a love for reading and promote literacy among students.
+
+In the future, we have plans to train AI models to write their own books, which will further expand the collection of available reading material. Additionally, we aim to incorporate virtual reality (VR) technology to enhance the reading experience. This will allow readers to immerse themselves in the story and even become a part of the book as a main or side character.
 
 ## Technologies Used
 - HTML, CSS
@@ -37,6 +43,7 @@
       GMAIL_USER="your-gmail"
       GMAIL_PASS="your-password"
       ```
+
 5. **Start the Application:**
     ```
     node index.js
