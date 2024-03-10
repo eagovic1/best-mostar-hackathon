@@ -240,14 +240,14 @@ app.get('/history/graded', async function (req, res) {
 const { sendMail } = require('./mail');
 
 function notifyTeacher(teacherMail, userName, bookName) {
-    let from = "emir.agovic13@gmail.com";
+    let from = "elibraryapp99@gmail.com";
     let to = teacherMail;
     let subject = "New book request";
     sendMail(from, to, subject, `Student ${userName} has made a request for the book ${bookName}!`);
 }
 
 function notifyStudent(studentMail, bookName, status) {
-    let from = "emir.agovic13@gmail.com";
+    let from = "elibraryapp99@gmail.com";
     let to = studentMail;
     let subject = "New book request";
     sendMail(from, to, subject, `Teacher has changed the status of your request for the book ${bookName} to ${status}!`);
@@ -265,7 +265,7 @@ app.post('/request/book', function (req, res) {
                 let book = await getBookById(bookId);
                 let bookName = book.title;
                 db.history.create({ status: 'pending', date: new Date(), bookId: bookId, UserId: req.session.user.id }).then(request => {
-                    notifyTeacher("eagovic1@etf.unsa.ba", req.session.user.name, bookName);
+                    notifyTeacher("elibraryapp99@gmail.com", req.session.user.name, bookName);
                     return res.status(200).json({ success: true });
                 });
             }
@@ -285,7 +285,7 @@ app.put('/request/book/status', function (req, res) {
                 let bookId = updatedRequest["bookId"];
                 let book = await getBookById(bookId);
                 let bookName = book.title;
-                notifyStudent("eagovic1@etf.unsa.ba", bookName, status);
+                notifyStudent("elibraryapp99@gmail.com", bookName, status);
                 return res.status(200).json({ success: true });
             });
 
