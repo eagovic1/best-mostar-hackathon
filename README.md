@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-=======
+
 # E-library web application
->>>>>>> 2b926e1a247e789273b91b837f0217306f4c05b1
-
-
-## E-library web application
 
 This project aims to provide students with a platform to access and read books for their school programs. Unlike traditional methods where professors dictate the reading material, this application allows students to choose books based on their interests and age. They can search for books by title and explore a wide range of options.
 
