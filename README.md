@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+# E-library web application
+>>>>>>> 2b926e1a247e789273b91b837f0217306f4c05b1
 
 
 ## E-library web application
@@ -48,10 +52,6 @@ In the future, we have plans to train AI models to write their own books, which 
     ```
     node index.js
     ```
-    or
-   ```
-   npm start
-   ```
 
 7. **Access the Application:**
     Open your web browser and navigate to `http://localhost:3000/home_page.html`.
