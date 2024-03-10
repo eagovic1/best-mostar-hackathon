@@ -37,10 +37,6 @@
     ```
     node index.js
     ```
-    or
-   ```
-   npm start
-   ```
 
 7. **Access the Application:**
     Open your web browser and navigate to `http://localhost:3000/home_page.html`.
